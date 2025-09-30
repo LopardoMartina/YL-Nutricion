@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Turnos - Nutrición YL{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="turnos-container">
+        <h1>Mis Turnos</h1>
+        
+        <!-- Turnos Próximos -->
+        <section class="turnos-section">
+            <h2>Turnos Próximos</h2>
+            
+            {% if turnos_futuros %}
+            <div class="turnos-grid">
+                {% for turno in turnos_futuros %}
+                <div class="turno-card turno-{{ turno.estado }}">
+                    <div class="turno-fecha">
+                        <span class="dia">{{ turno.fecha|date:"d" }}</span>
+                        <span class="mes">{{ turno.fecha|date:"M" }}</span>
+                    </div>
+                    <div class="turno-info">
+                        <h3>{{ turno.fecha|date:"l, d de F Y" }}</h3>
+                        <p class="turno-hora">🕐 {{ turno.hora }}</p>
+                        <p class="turno-estado">
+                            <span class="badge badge-{{ turno.estado }}">{{ turno.get_estado_display }}</span>
+                        </p>
+                        {% if turno.motivo %}
+                        <p class="turno-motivo"><strong>Motivo:</strong> {{ turno.motivo }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="turno-actions">
+                        <form method="post" action="{% url 'turnos:cancelar' turno.id %}" 
+                              onsubmit="return confirm('¿Estás seguro de cancelar este turno?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <p>No tienes turnos próximos agendados.</p>
+                <a href="{% url 'turnos:agendar' %}" class="btn btn-primary">Agendar Turno</a>
+            </div>
+            {% endif %}
+        </section>
+        
+        <!-- Historial -->
+        <section class="turnos-section">
+            <h2>Historial de Turnos</h2>
+            
+            {% if turnos_pasados %}
+            <table class="turnos-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                        <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for turno in turnos_pasados %}
+                    <tr>
+                        <td>{{ turno.fecha|date:"d/m/Y" }}</td>
+                        <td>{{ turno.hora }}</td>
+                        <td><span class="badge badge-{{ turno.estado }}">{{ turno.get_estado_display }}</span></td>
+                        <td>{{ turno.notas_profesional|default:"Sin notas" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay historial de turnos.</p>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}
