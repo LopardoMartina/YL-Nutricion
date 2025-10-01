@@ -3,6 +3,10 @@
 
 {% block title %}Mis Turnos - Nutrición YL{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/styles_mis_turnos.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="turnos-container">
@@ -22,7 +26,7 @@
                     </div>
                     <div class="turno-info">
                         <h3>{{ turno.fecha|date:"l, d \\d\\e F \\d\\e Y" }}</h3>
-                        <p class="turno-hora">🕐 {{ turno.hora }}</p>
+                        <p class="turno-hora"> {{ turno.hora }}</p>
                         <p class="turno-estado">
                             <span class="badge badge-{{ turno.estado }}">{{ turno.get_estado_display }}</span>
                         </p>
@@ -34,7 +38,7 @@
                         <form method="post" action="{% url 'turnos:cancelar' turno.id %}" 
                               onsubmit="return confirm('¿Estás seguro de cancelar este turno?');">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Cancelar turno</button>
                         </form>
                     </div>
                 </div>
