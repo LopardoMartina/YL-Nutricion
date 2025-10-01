@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load django_browser_reload %}
+
+{% block title %}Calendario de Turnos - Nutrición YL{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/styles_turnos_calendario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Calendario de Turnos</h1>
+    
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-numero">{{ turnos_por_fecha|length }}</div>
+            <div class="stat-label">Días con turnos</div>
+        </div>
+    </div>
+    
+    <div class="calendario-header">
+        <div class="calendario-nav">
+            <a href="?mes={{ mes_anterior }}&anio={{ anio_anterior }}" class="btn-mes">← Anterior</a>
+            <h2>{{ mes_nombre }} {{ anio }}</h2>
+            <a href="?mes={{ mes_siguiente }}&anio={{ anio_siguiente }}" class="btn-mes">Siguiente →</a>
+        </div>
+        <a href="{% url 'turnos:disponibilidad' %}" class="btn btn-secondary">Configurar Disponibilidad</a>
+    </div>
+    
+    <div class="calendario-grid">
+        <div class="calendario-dias">
+            <div class="dia-nombre">Lun</div>
+            <div class="dia-nombre">Mar</div>
+            <div class="dia-nombre">Mié</div>
+            <div class="dia-nombre">Jue</div>
+            <div class="dia-nombre">Vie</div>
+            <div class="dia-nombre">Sáb</div>
+            <div class="dia-nombre">Dom</div>
+        </div>
+        
+        <div class="calendario-celdas">
+            {% for semana in calendario %}
+                {% for dia in semana %}
+                    {% if dia == 0 %}
+                        <div class="celda-dia otro-mes"></div>
+                    {% else %}
+                        {% with fecha=anio|add:"-"|add:mes|add:"-"|add:dia %}
+                            <div class="celda-dia {% if hoy.day == dia and hoy.month == mes and hoy.year == anio %}hoy{% endif %}">
+                                <div class="numero-dia">{{ dia }}</div>
+                                
+                                {% for fecha_str, turnos in turnos_por_fecha.items %}
+                                    {% if fecha_str|slice:"8:" == dia|stringformat:"02d" %}
+                                        {% for turno in turnos %}
+                                            <a href="{% url 'turnos:detalle_turno' turno.id %}" class="turno-item turno-{{ turno.estado }}">
+                                                {{ turno.hora|slice:":5" }} - {{ turno.paciente.usuario.get_full_name|truncatewords:2 }}
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

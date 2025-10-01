@@ -21,7 +21,7 @@
                         <span class="mes">{{ turno.fecha|date:"M" }}</span>
                     </div>
                     <div class="turno-info">
-                        <h3>{{ turno.fecha|date:"l, d de F Y" }}</h3>
+                        <h3>{{ turno.fecha|date:"l, d \\d\\e F \\d\\e Y" }}</h3>
                         <p class="turno-hora">🕐 {{ turno.hora }}</p>
                         <p class="turno-estado">
                             <span class="badge badge-{{ turno.estado }}">{{ turno.get_estado_display }}</span>

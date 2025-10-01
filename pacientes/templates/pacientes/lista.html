@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Pacientes - Nutrición YL{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Lista de Pacientes</h1>
+    
+    <div class="pacientes-grid">
+        {% for paciente in pacientes %}
+        <div class="paciente-card">
+            <h3>{{ paciente.usuario.get_full_name }}</h3>
+            <p>Email: {{ paciente.usuario.email }}</p>
+            <p>Teléfono: {{ paciente.usuario.telefono|default:"No especificado" }}</p>
+            <a href="{% url 'pacientes:detalle' paciente.id %}" class="btn btn-primary btn-sm">Ver Historial</a>
+        </div>
+        {% empty %}
+        <p>No hay pacientes registrados.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.pacientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.paciente-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

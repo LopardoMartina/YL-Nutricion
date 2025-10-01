@@ -1,0 +1,74 @@
+.disponibilidad-container {
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+.disponibilidad-list {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.disponibilidad-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.disponibilidad-item:last-child {
+    border-bottom: none;
+}
+
+.disponibilidad-info {
+    flex: 1;
+}
+
+.dia-nombre {
+    font-weight: 600;
+    color: #2196f3;
+}
+
+.horario {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.disponibilidad-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.estado-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.estado-activo {
+    background: #d4edda;
+    color: #155724;
+}
+
+.estado-inactivo {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.form-agregar {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}

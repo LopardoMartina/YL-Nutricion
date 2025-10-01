@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalle del Turno - Nutrición YL{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="turno-detalle">
+        <h1>Detalle del Turno</h1>
+        
+        <div class="info-grid">
+            <div class="info-section">
+                <h2>Información del Turno</h2>
+                <p><strong>Fecha:</strong> {{ turno.fecha|date:"l, d de F de Y" }}</p>
+                <p><strong>Hora:</strong> {{ turno.hora }}</p>
+                <p><strong>Estado:</strong> 
+                    <span class="badge badge-{{ turno.estado }}">{{ turno.get_estado_display }}</span>
+                </p>
+                {% if turno.motivo %}
+                <p><strong>Motivo:</strong> {{ turno.motivo }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="info-section">
+                <h2>Información del Paciente</h2>
+                <p><strong>Nombre:</strong> {{ paciente.usuario.get_full_name }}</p>
+                <p><strong>Email:</strong> {{ paciente.usuario.email }}</p>
+                <p><strong>Teléfono:</strong> {{ paciente.usuario.telefono|default:"No especificado" }}</p>
+                <p><strong>Edad:</strong> 
+                    {% if paciente.usuario.fecha_nacimiento %}
+                        {{ paciente.usuario.fecha_nacimiento|timesince|truncatewords:1 }}
+                    {% else %}
+                        No especificada
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>Notas del Profesional</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="completar">
+                <textarea name="notas" class="form-control" rows="5" placeholder="Agregar notas sobre la consulta...">{{ turno.notas_profesional }}</textarea>
+                <div class="actions" style="margin-top: 1rem;">
+                    {% if turno.estado == 'pendiente' %}
+                    <button type="submit" formaction="{% url 'turnos:detalle_turno' turno.id %}" 
+                            onclick="this.form.action.value='confirmar'" class="btn btn-success">
+                        Confirmar Turno
+                    </button>
+                    {% endif %}
+                    
+                    {% if turno.estado in 'pendiente,confirmado' %}
+                    <button type="submit" class="btn btn-primary">Completar y Guardar Notas</button>
+                    <button type="submit" formaction="{% url 'turnos:detalle_turno' turno.id %}"
+                            onclick="return confirm('¿Cancelar este turno?') && (this.form.action.value='cancelar', true)" 
+                            class="btn btn-danger">
+                        Cancelar Turno
+                    </button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        
+        <a href="{% url 'turnos:calendario' %}" class="btn btn-secondary">Volver al Calendario</a>
+        <a href="{% url 'pacientes:detalle' paciente.id %}" class="btn btn-secondary">Ver Historial del Paciente</a>
+    </div>
+</div>
+
+<style>
+.turno-detalle {
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.info-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.info-section h2 {
+    margin-bottom: 1rem;
+    color: #2196f3;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+</style>
+{% endblock %}
